@@ -1,0 +1,44 @@
+# Deployment scripts
+deploy.sh
+remote_install.sh
+restore.sh
+resotre.sh
+
+# =========================
+# 2. OS Generated Files (OSが自動生成する隠しファイル)
+# =========================
+# Mac環境での開発では必須です（フォルダの表示設定などが記録されるファイル）
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+# Windows環境と共有する場合に備えて
+ehthumbs.db
+Thumbs.db
+
+# =========================
+# 3. IDE / Editor Files (エディタの設定ファイル)
+# =========================
+# VSCodeやIntelliJなどのローカル設定は共有しないのが鉄則です
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# 4. Logs & Databases (ログ・データベース・バックアップ)
+# =========================
+# エラーログやDBのダンプファイルは容量を圧迫し、情報漏洩の元になります
+*.log
+error_log
+debug.log
+*.sql
+*.sqlite
+*.zip
+*.tar.gz
+
+# =========================
+# 5. Node.js (将来的に npm run build などを導入する場合)
+# =========================
+node_modules/

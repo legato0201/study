@@ -1,0 +1,326 @@
+/* 
+ * Study Progress Tracker SPA Styles 
+ * Utilizes CSS Variables for easy theming and responsive design
+ */
+
+:root {
+    --spt-primary: #3b82f6;
+    --spt-primary-hover: #2563eb;
+    --spt-bg-site: #f3f4f6;
+    --spt-bg-card: #ffffff;
+    --spt-bg-column: #f9fafb;
+    --spt-text-main: #1f2937;
+    --spt-text-muted: #6b7280;
+    --spt-border: #e5e7eb;
+    --spt-success: #10b981;
+    --spt-danger: #ef4444;
+    --spt-radius: 8px;
+    --spt-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+    --spt-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    --spt-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+#spt-app-root {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: var(--spt-text-main);
+    background-color: var(--spt-bg-site);
+    padding: 20px;
+    border-radius: var(--spt-radius);
+    box-sizing: border-box;
+    line-height: 1.5;
+}
+
+#spt-app-root * {
+    box-sizing: border-box;
+}
+
+.spt-loading {
+    text-align: center;
+    padding: 40px;
+    color: var(--spt-text-muted);
+    font-size: 1.1rem;
+}
+
+/* Header & Child Selector */
+.spt-header {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 24px;
+}
+
+.spt-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.spt-child-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+.spt-child-tab {
+    padding: 8px 16px;
+    background: var(--spt-bg-card);
+    border: 1px solid var(--spt-border);
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    user-select: none;
+}
+
+.spt-child-tab:hover {
+    border-color: var(--spt-primary);
+}
+
+.spt-child-tab.active {
+    background: var(--spt-primary);
+    color: white;
+    border-color: var(--spt-primary);
+    box-shadow: var(--spt-shadow-sm);
+}
+
+.spt-btn {
+    padding: 8px 16px;
+    border-radius: var(--spt-radius);
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.spt-btn-primary {
+    background-color: var(--spt-primary);
+    color: white;
+}
+
+.spt-btn-primary:hover {
+    background-color: var(--spt-primary-hover);
+}
+
+.spt-btn-secondary {
+    background-color: var(--spt-bg-card);
+    border: 1px solid var(--spt-border);
+    color: var(--spt-text-main);
+}
+
+.spt-btn-secondary:hover {
+    background-color: var(--spt-border);
+}
+
+.spt-btn-danger {
+    background-color: var(--spt-danger);
+    color: white;
+}
+
+/* Kanban Board Layout */
+.spt-board {
+    display: flex;
+    gap: 20px;
+    overflow-x: auto;
+    padding-bottom: 10px;
+}
+
+.spt-column {
+    flex: 1;
+    min-width: 280px;
+    background: var(--spt-bg-column);
+    border-radius: var(--spt-radius);
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.spt-column h3 {
+    margin: 0 0 10px 0;
+    font-size: 1.1rem;
+    color: var(--spt-text-muted);
+    font-weight: 600;
+}
+
+.spt-task-card {
+    background: var(--spt-bg-card);
+    border: 1px solid var(--spt-border);
+    border-radius: var(--spt-radius);
+    padding: 15px;
+    box-shadow: var(--spt-shadow-sm);
+    cursor: pointer;
+    transition: transform 0.1s, box-shadow 0.1s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.spt-task-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--spt-shadow-md);
+    border-color: var(--spt-primary);
+}
+
+.spt-task-subject {
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--spt-primary);
+    letter-spacing: 0.05em;
+}
+
+.spt-task-milestone {
+    font-size: 1rem;
+    font-weight: 500;
+}
+
+.spt-add-task-btn {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 2px dashed var(--spt-border);
+    border-radius: var(--spt-radius);
+    color: var(--spt-text-muted);
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: auto;
+}
+
+.spt-add-task-btn:hover {
+    border-color: var(--spt-primary);
+    color: var(--spt-primary);
+    background: rgba(59, 130, 246, 0.05);
+}
+
+/* Modal Styling */
+.spt-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 100000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+
+.spt-modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.spt-modal {
+    background: var(--spt-bg-card);
+    border-radius: var(--spt-radius);
+    width: 90%;
+    max-width: 500px;
+    box-shadow: var(--spt-shadow-lg);
+    transform: translateY(20px);
+    transition: transform 0.2s;
+    display: flex;
+    flex-direction: column;
+}
+
+.spt-modal-overlay.active .spt-modal {
+    transform: translateY(0);
+}
+
+.spt-modal-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--spt-border);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.spt-modal-header h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.spt-modal-close {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--spt-text-muted);
+    line-height: 1;
+}
+
+.spt-modal-body {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.spt-form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.spt-form-group label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--spt-text-main);
+}
+
+.spt-form-group input,
+.spt-form-group select,
+.spt-form-group textarea {
+    padding: 10px;
+    border: 1px solid var(--spt-border);
+    border-radius: var(--spt-radius);
+    font-size: 1rem;
+    font-family: inherit;
+    transition: border-color 0.2s;
+}
+
+.spt-form-group input:focus,
+.spt-form-group select:focus,
+.spt-form-group textarea:focus {
+    outline: none;
+    border-color: var(--spt-primary);
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.2);
+}
+
+.spt-modal-footer {
+    padding: 16px 20px;
+    border-top: 1px solid var(--spt-border);
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+}
+
+.spt-modal-footer.space-between {
+    justify-content: space-between;
+}
+
+/* Empty State */
+.spt-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--spt-text-muted);
+    background: var(--spt-bg-card);
+    border-radius: var(--spt-radius);
+    border: 1px dashed var(--spt-border);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .spt-board {
+        flex-direction: column;
+    }
+    .spt-column {
+        min-width: 100%;
+    }
+}
