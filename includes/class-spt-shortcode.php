@@ -29,12 +29,8 @@ class SPT_Shortcode
         ?>
         <link rel="stylesheet" href="<?php echo $css_url; ?>">
 
-        <script>
-            window.sptConfig = {
-                apiUrl: "<?php echo $api_url; ?>",
-                nonce: "<?php echo $nonce; ?>"
-            };
-            console.log("SPT: Config loaded.");
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script>     window.sptConfig = {         apiUrl: "<?php echo $api_url; ?>",         nonce: "<?php echo $nonce; ?>"     };     console.log("SPT: Config loaded.");
         </script>
 
         <script type="module" src="<?php echo $js_url; ?>"></script>
