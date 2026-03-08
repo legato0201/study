@@ -159,6 +159,18 @@ export default class PCDashboardView {
                 roadmapMount.innerHTML = `<div class="spt-empty-state" style="padding: 20px;">お子様を選択してください</div>`;
             }
         });
+
+        // ▼▼ ここから追加（リアルタイム更新のフック） ▼▼
+        // 二重登録を防ぐための処理
+        if (!this.isListenerAdded) {
+            document.addEventListener('spt-data-updated', async () => {
+                overallSummaryMount.innerHTML = `<span style="color: var(--spt-text-muted); font-size: 0.9rem;">更新中...</span>`;
+                // グラフを破棄して再描画処理をトリガー（自身を再実行）
+                this.render(mountEl, children);
+            });
+            this.isListenerAdded = true;
+        }
+        // ▲▲ ここまで追加 ▲▲
     }
 
     /**

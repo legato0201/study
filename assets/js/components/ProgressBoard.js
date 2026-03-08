@@ -118,6 +118,8 @@ export default class ProgressBoard {
             onSave: (savedTask) => {
                 this.tasks.push(savedTask);
                 this.renderBoard();
+                // ▼▼ 追加（更新をシステム全体に通知） ▼▼
+                document.dispatchEvent(new CustomEvent('spt-data-updated'));
             }
         });
     }
@@ -136,6 +138,8 @@ export default class ProgressBoard {
                     this.tasks[idx] = updatedTask;
                 }
                 this.renderBoard();
+                // ▼▼ 追加（更新をシステム全体に通知） ▼▼
+                document.dispatchEvent(new CustomEvent('spt-data-updated'));
             },
             onDelete: async (taskId) => {
                 const confirmed = confirm("このタスクを削除しますか？");
@@ -145,6 +149,8 @@ export default class ProgressBoard {
                     await deleteProgress(taskId);
                     this.tasks = this.tasks.filter(t => t.id != taskId);
                     this.renderBoard();
+                    // ▼▼ 追加（更新をシステム全体に通知） ▼▼
+                    document.dispatchEvent(new CustomEvent('spt-data-updated'));
                     TaskModal.close();
                 } catch (error) {
                     alert('削除に失敗しました: ' + error.message);

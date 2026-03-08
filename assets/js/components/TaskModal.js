@@ -43,6 +43,17 @@ export default class TaskModal {
                                 <option value="done">完了 (Done)</option>
                             </select>
                         </div>
+                        
+                        <div style="display:flex; gap:10px;">
+                            <div class="spt-form-group" style="flex:1;">
+                                <label>予定時間 (分)</label>
+                                <input type="number" id="spt-modal-estimated-time" min="0" placeholder="例: 30">
+                            </div>
+                            <div class="spt-form-group" style="flex:1;">
+                                <label>実学習時間 (分)</label>
+                                <input type="number" id="spt-modal-actual-time" min="0" placeholder="例: 45">
+                            </div>
+                        </div>
                     </div>
                     <div class="spt-modal-footer space-between">
                         <button id="spt-modal-delete-btn" class="spt-btn spt-btn-danger" style="display:none;">削除</button>
@@ -89,6 +100,9 @@ export default class TaskModal {
         document.getElementById('spt-modal-subject').value = task.subject || '';
         document.getElementById('spt-modal-milestone').value = task.milestone || '';
         document.getElementById('spt-modal-status').value = task.status || 'todo';
+        // ▼▼ 追加 ▼▼
+        document.getElementById('spt-modal-estimated-time').value = task.estimated_time || '';
+        document.getElementById('spt-modal-actual-time').value = task.actual_time || '';
 
         const deleteBtn = document.getElementById('spt-modal-delete-btn');
         if (mode === 'edit') {
@@ -130,6 +144,9 @@ export default class TaskModal {
         const subject = document.getElementById('spt-modal-subject').value.trim();
         const milestone = document.getElementById('spt-modal-milestone').value.trim();
         const status = document.getElementById('spt-modal-status').value;
+        // ▼▼ 追加 ▼▼
+        const estimated_time = parseInt(document.getElementById('spt-modal-estimated-time').value, 10) || 0;
+        const actual_time = parseInt(document.getElementById('spt-modal-actual-time').value, 10) || 0;
 
         if (!subject || !milestone) {
             alert('教科とマイルストーンは必須です');
@@ -143,9 +160,11 @@ export default class TaskModal {
         try {
             let savedTask;
             if (this.config.mode === 'edit') {
-                savedTask = await updateProgress(id, { subject, milestone, status });
+                // ▼▼ 修正（時間を追加） ▼▼
+                savedTask = await updateProgress(id, { subject, milestone, status, estimated_time, actual_time });
             } else {
-                savedTask = await createProgress({ child_id, subject, milestone, status });
+                // ▼▼ 修正（時間を追加） ▼▼
+                savedTask = await createProgress({ child_id, subject, milestone, status, estimated_time, actual_time });
             }
 
             if (this.config.onSave) {

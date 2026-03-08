@@ -10,6 +10,15 @@ if (!defined('ABSPATH')) {
 class SPT_API
 {
 
+    /**
+     * API実行権限のチェック（新規追加）
+     */
+    public static function check_permission()
+    {
+        // ログインしているユーザーのみ許可する
+        return is_user_logged_in();
+    }
+
     public static function register_routes()
     {
         $namespace = 'spt/v1';
@@ -19,12 +28,12 @@ class SPT_API
             [
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [__CLASS__, 'get_children'],
-                'permission_callback' => '__return_true', // 今回は公開ページ前提としてtrue。必要に応じ権限チェック
+                'permission_callback' => [__CLASS__, 'check_permission'], // 今回は公開ページ前提としてtrue。必要に応じ権限チェック
             ],
             [
                 'methods' => WP_REST_Server::CREATABLE,
                 'callback' => [__CLASS__, 'add_child'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [__CLASS__, 'check_permission'],
             ]
         ]);
 
@@ -33,7 +42,7 @@ class SPT_API
             [
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [__CLASS__, 'get_progress'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [__CLASS__, 'check_permission'],
             ],
         ]);
 
@@ -42,7 +51,7 @@ class SPT_API
             [
                 'methods' => WP_REST_Server::CREATABLE,
                 'callback' => [__CLASS__, 'add_progress'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [__CLASS__, 'check_permission'],
             ]
         ]);
 
@@ -51,12 +60,12 @@ class SPT_API
             [
                 'methods' => WP_REST_Server::EDITABLE,
                 'callback' => [__CLASS__, 'update_progress'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [__CLASS__, 'check_permission'],
             ],
             [
                 'methods' => WP_REST_Server::DELETABLE,
                 'callback' => [__CLASS__, 'delete_progress'],
-                'permission_callback' => '__return_true',
+                'permission_callback' => [__CLASS__, 'check_permission'],
             ],
         ]);
     }
