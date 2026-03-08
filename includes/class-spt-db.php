@@ -38,6 +38,8 @@ class SPT_DB
             subject varchar(100) NOT NULL,
             milestone text NOT NULL,
             status varchar(50) DEFAULT 'todo' NOT NULL,
+            estimated_time int(11) DEFAULT 0 NOT NULL,
+            actual_time int(11) DEFAULT 0 NOT NULL,
             created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id),
@@ -106,8 +108,10 @@ class SPT_DB
                 'subject' => $data['subject'],
                 'milestone' => $data['milestone'],
                 'status' => isset($data['status']) ? $data['status'] : 'todo',
+                'estimated_time' => isset($data['estimated_time']) ? intval($data['estimated_time']) : 0,
+                'actual_time' => isset($data['actual_time']) ? intval($data['actual_time']) : 0,
             ],
-            ['%d', '%s', '%s', '%s']
+            ['%d', '%s', '%s', '%s', '%d', '%d']
         );
 
         if ($inserted) {
@@ -138,6 +142,14 @@ class SPT_DB
         if (isset($data['status'])) {
             $update_data['status'] = $data['status'];
             $format[] = '%s';
+        }
+        if (isset($data['estimated_time'])) {
+            $update_data['estimated_time'] = intval($data['estimated_time']);
+            $format[] = '%d';
+        }
+        if (isset($data['actual_time'])) {
+            $update_data['actual_time'] = intval($data['actual_time']);
+            $format[] = '%d';
         }
 
         if (empty($update_data))
