@@ -119,7 +119,7 @@ export default class MobileChildView {
             html += '<div style="display:flex; flex-direction:column; gap:15px;">';
 
             this.tasks.forEach(task => {
-                const isTimerActive = this.activeTimerId === task.id;
+                const isTimerActive = this.activeTimerId == task.id;
                 const timerDisplay = isTimerActive ? this.formatTime(this.elapsedSeconds) : '00:00';
 
                 html += `
@@ -189,7 +189,7 @@ export default class MobileChildView {
      * タイマー停止 ＆ タスク完了（API送信）
      */
     static async finishTask(taskId) {
-        const task = this.tasks.find(t => t.id === taskId);
+        const task = this.tasks.find(t => t.id == taskId);
         if (!task) return;
 
         // タイマーを止める
