@@ -6,7 +6,8 @@ import { fetchChildren } from './api-client.js';
 import ChildSelector from './components/ChildSelector.js';
 import ProgressBoard from './components/ProgressBoard.js';
 
-document.addEventListener('DOMContentLoaded', async () => {
+// 1. 全体を包括していたコールバックを「initApp」関数として独立させる
+async function initApp() {
     const root = document.getElementById('spt-app-root');
     if (!root) return;
 
@@ -51,4 +52,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         </div>`;
         console.error('App initialization error:', error);
     }
-});
+}
+
+// 2. モジュールの読み込みタイミングに合わせて確実に初期化関数をキックする
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    // 既にDOM構築が完了している場合は即座に実行
+    initApp();
+}
