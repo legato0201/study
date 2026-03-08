@@ -66,8 +66,8 @@ export default class MobileChildView {
 
         try {
             const allTasks = await fetchProgress(childId);
-            // 「未着手」と「進行中」のタスクだけを抽出（完了したものは見せない）
-            this.tasks = allTasks.filter(t => t.status === 'todo' || t.status === 'in_progress');
+            // 「未着手」「進行中」「演習・テスト中」のタスクだけを抽出（完了したものは見せない）
+            this.tasks = allTasks.filter(t => ['todo', 'in_progress', 'review'].includes(t.status));
             this.renderTasks();
         } catch (error) {
             taskArea.innerHTML = `<div class="spt-empty-state spt-error">エラーがおきました: ${error.message}</div>`;
@@ -122,6 +122,13 @@ export default class MobileChildView {
                 const isTimerActive = this.activeTimerId == task.id;
                 const timerDisplay = isTimerActive ? this.formatTime(this.elapsedSeconds) : '00:00';
 
+                // ▼▼ 追加 (スマホ用リンクボタン) ▼▼
+                const linkBtnHtml = task.resource_url ? `
+                    <a href="${this.escapeHtml(task.resource_url)}" target="_blank" style="display:block; text-align:center; background:#e0f2fe; color:var(--spt-primary); padding:12px; border-radius:8px; margin-bottom:15px; font-weight:bold; text-decoration:none;">
+                        📺 動画・教材を開く
+                    </a>
+                ` : '';
+
                 html += `
                     <div class="spt-mobile-task-card" style="background: white; border-radius: 12px; padding: 20px; box-shadow: var(--spt-shadow-md); border-left: 6px solid var(--spt-primary);">
                         <div style="font-size: 0.8rem; font-weight: bold; color: var(--spt-primary); margin-bottom: 5px;">
@@ -131,7 +138,7 @@ export default class MobileChildView {
                             ${this.escapeHtml(task.milestone)}
                         </div>
                         
-                        <div style="background: #f3f4f6; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px;">
+                        ${linkBtnHtml} <div style="background: #f3f4f6; border-radius: 8px; padding: 15px; text-align: center; margin-bottom: 15px;">
                             <div id="timer-display-${task.id}" style="font-size: 2rem; font-family: monospace; font-weight: bold; color: ${isTimerActive ? 'var(--spt-danger)' : '#374151'};">
                                 ${timerDisplay}
                             </div>

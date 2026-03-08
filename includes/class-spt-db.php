@@ -40,6 +40,7 @@ class SPT_DB
             status varchar(50) DEFAULT 'todo' NOT NULL,
             estimated_time int(11) DEFAULT 0 NOT NULL,
             actual_time int(11) DEFAULT 0 NOT NULL,
+            resource_url text NOT NULL, /* ←追加: 教材URL用カラム */
             created_at datetime DEFAULT CURRENT_TIMESTAMP NOT NULL,
             updated_at datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP NOT NULL,
             PRIMARY KEY  (id),
@@ -110,8 +111,9 @@ class SPT_DB
                 'status' => isset($data['status']) ? $data['status'] : 'todo',
                 'estimated_time' => isset($data['estimated_time']) ? intval($data['estimated_time']) : 0,
                 'actual_time' => isset($data['actual_time']) ? intval($data['actual_time']) : 0,
+                'resource_url' => isset($data['resource_url']) ? sanitize_url($data['resource_url']) : '', /* ←追加 */
             ],
-            ['%d', '%s', '%s', '%s', '%d', '%d']
+            ['%d', '%s', '%s', '%s', '%d', '%d', '%s'] /* ←追加: 末尾に '%s' を足す */
         );
 
         if ($inserted) {
@@ -151,6 +153,12 @@ class SPT_DB
             $update_data['actual_time'] = intval($data['actual_time']);
             $format[] = '%d';
         }
+        // ▼▼ ここから追加 ▼▼
+        if (isset($data['resource_url'])) {
+            $update_data['resource_url'] = sanitize_url($data['resource_url']);
+            $format[] = '%s';
+        }
+        // ▲▲ ここまで追加 ▲▲
 
         if (empty($update_data))
             return false;

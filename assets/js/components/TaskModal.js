@@ -39,11 +39,16 @@ export default class TaskModal {
                             <label>ステータス</label>
                             <select id="spt-modal-status">
                                 <option value="todo">未着手 (Todo)</option>
-                                <option value="in_progress">進行中 (In Progress)</option>
+                                <option value="in_progress">インプット中 (In Progress)</option>
+                                <option value="review">演習・テスト中 (Review)</option>
                                 <option value="done">完了 (Done)</option>
                             </select>
                         </div>
                         
+                        <div class="spt-form-group">
+                            <label>教材URL (YouTube動画など)</label>
+                            <input type="url" id="spt-modal-resource-url" placeholder="https://youtube.com/...">
+                        </div>
                         <div style="display:flex; gap:10px;">
                             <div class="spt-form-group" style="flex:1;">
                                 <label>予定時間 (分)</label>
@@ -100,7 +105,7 @@ export default class TaskModal {
         document.getElementById('spt-modal-subject').value = task.subject || '';
         document.getElementById('spt-modal-milestone').value = task.milestone || '';
         document.getElementById('spt-modal-status').value = task.status || 'todo';
-        // ▼▼ 追加 ▼▼
+        document.getElementById('spt-modal-resource-url').value = task.resource_url || ''; // ←追加
         document.getElementById('spt-modal-estimated-time').value = task.estimated_time || '';
         document.getElementById('spt-modal-actual-time').value = task.actual_time || '';
 
@@ -144,7 +149,7 @@ export default class TaskModal {
         const subject = document.getElementById('spt-modal-subject').value.trim();
         const milestone = document.getElementById('spt-modal-milestone').value.trim();
         const status = document.getElementById('spt-modal-status').value;
-        // ▼▼ 追加 ▼▼
+        const resource_url = document.getElementById('spt-modal-resource-url').value.trim(); // ←追加
         const estimated_time = parseInt(document.getElementById('spt-modal-estimated-time').value, 10) || 0;
         const actual_time = parseInt(document.getElementById('spt-modal-actual-time').value, 10) || 0;
 
@@ -160,11 +165,11 @@ export default class TaskModal {
         try {
             let savedTask;
             if (this.config.mode === 'edit') {
-                // ▼▼ 修正（時間を追加） ▼▼
-                savedTask = await updateProgress(id, { subject, milestone, status, estimated_time, actual_time });
+                // ▼▼ 修正 (resource_urlを追加) ▼▼
+                savedTask = await updateProgress(id, { subject, milestone, status, estimated_time, actual_time, resource_url });
             } else {
-                // ▼▼ 修正（時間を追加） ▼▼
-                savedTask = await createProgress({ child_id, subject, milestone, status, estimated_time, actual_time });
+                // ▼▼ 修正 (resource_urlを追加) ▼▼
+                savedTask = await createProgress({ child_id, subject, milestone, status, estimated_time, actual_time, resource_url });
             }
 
             if (this.config.onSave) {

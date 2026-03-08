@@ -14,8 +14,9 @@ export default class ProgressBoard {
     // 定義済みのステータスとカラムラベル
     static columns = [
         { id: 'todo', label: '未着手 (Todo)' },
-        { id: 'in_progress', label: '進行中 (In Progress)' },
-        { id: 'done', label: '完了 (Done)' }
+        { id: 'in_progress', label: 'インプット中 (In Progress)' },
+        { id: 'review', label: '演習・テスト中 (Review)' }, // ←追加
+        { id: 'done', label: '定着完了 (Done)' }
     ];
 
     /**
@@ -56,11 +57,14 @@ export default class ProgressBoard {
 
             let tasksHtml = '';
             colTasks.forEach(task => {
+                // ▼▼ 追加 (リンクボタンの生成) ▼▼
+                const linkHtml = task.resource_url ? `<a href="${this.escapeHtml(task.resource_url)}" target="_blank" style="display:inline-block; margin-top:8px; font-size:0.8rem; color:var(--spt-primary); background:#e0f2fe; padding:4px 8px; border-radius:4px; text-decoration:none;" onclick="event.stopPropagation();">📺 動画・教材を開く</a>` : '';
+
                 tasksHtml += `
                     <div class="spt-task-card" data-id="${task.id}">
                         <div class="spt-task-subject">${this.escapeHtml(task.subject)}</div>
                         <div class="spt-task-milestone">${this.escapeHtml(task.milestone)}</div>
-                    </div>
+                        ${linkHtml} </div>
                 `;
             });
 

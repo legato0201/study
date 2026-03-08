@@ -1,6 +1,7 @@
 import ChildSelector from './ChildSelector.js';
 import ProgressBoard from './ProgressBoard.js';
-import { fetchProgress } from '../api-client.js';
+// ▼▼ 変更 ▼▼
+import { fetchProgress, createProgress } from '../api-client.js';
 
 /**
  * PC向け 親用ダッシュボード (Strategy & Analytics)
@@ -38,7 +39,11 @@ export default class PCDashboardView {
 
                 <div style="display: flex; gap: 20px; align-items: flex-start;">
                     <div style="flex: 2; min-width: 0;">
-                        <h3 style="margin-bottom: 15px; color: var(--spt-text-main);">📋 個別タスク管理・割り当て</h3>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+                            <h3 style="margin: 0; color: var(--spt-text-main);">📋 個別タスク管理・割り当て</h3>
+                            <button id="spt-pc-csv-import-btn" class="spt-btn spt-btn-secondary" style="font-size: 0.85rem; display: none;">📥 CSVインポート</button>
+                            <input type="file" id="spt-pc-csv-file" accept=".csv" style="display: none;">
+                        </div>
                         <div id="spt-pc-selector-mount" style="margin-bottom: 20px;"></div>
                         <div id="spt-pc-board-mount" style="background: white; padding: 20px; border-radius: 12px; box-shadow: var(--spt-shadow-sm);"></div>
                     </div>
@@ -151,12 +156,19 @@ export default class PCDashboardView {
         const roadmapMount = document.getElementById('spt-pc-roadmap-mount');
 
         ChildSelector.init(selectorMount, children, (selectedChild) => {
+            const importBtn = document.getElementById('spt-pc-csv-import-btn');
             if (selectedChild) {
                 ProgressBoard.render(boardMount, selectedChild);
                 this.renderRoadmap(roadmapMount, selectedChild);
+
+                // ▼▼ 追加 (CSVボタンの表示とイベント) ▼▼
+                importBtn.style.display = 'block';
+                importBtn.onclick = () => document.getElementById('spt-pc-csv-file').click();
+                document.getElementById('spt-pc-csv-file').onchange = (e) => this.handleCSVImport(e, selectedChild.id);
             } else {
                 boardMount.innerHTML = `<div class="spt-empty-state">お子様を選択するか、新しく追加してください。</div>`;
                 roadmapMount.innerHTML = `<div class="spt-empty-state" style="padding: 20px;">お子様を選択してください</div>`;
+                importBtn.style.display = 'none'; // ←追加
             }
         });
 
@@ -258,6 +270,55 @@ export default class PCDashboardView {
 
     static unmount() {
         this.chartInstances.forEach(chart => chart.destroy());
+    }
+
+    /**
+     * CSVインポート処理
+     */
+    static async handleCSVImport(event, childId) {
+        const file = event.target.files[0];
+        if (!file) return;
+
+        const confirmMsg = "CSVファイルからタスクを一括登録しますか？\n(1行目からデータとして読み込みます)\nフォーマット: 教科, マイルストーン, 教材URL";
+        if (!confirm(confirmMsg)) {
+            event.target.value = '';
+            return;
+        }
+
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            const text = e.target.result;
+            // 改行で分割し、空行を除外
+            const lines = text.split('\n').map(line => line.trim()).filter(line => line);
+
+            let successCount = 0;
+            // APIの連続コールとなるため、プログレスバー等を入れるとより親切ですが、今回はシンプルにawaitで直列処理します。
+            for (const line of lines) {
+                // 簡易パーサー（カンマ区切り）
+                const [subject, milestone, resourceUrl] = line.split(',').map(s => s ? s.trim() : '');
+
+                if (subject && milestone) {
+                    try {
+                        await createProgress({
+                            child_id: childId,
+                            subject: subject,
+                            milestone: milestone,
+                            resource_url: resourceUrl || '',
+                            status: 'todo',
+                            estimated_time: 0,
+                            actual_time: 0
+                        });
+                        successCount++;
+                    } catch (err) {
+                        console.error('CSV Import Error:', line, err);
+                    }
+                }
+            }
+            alert(`${successCount} 件のミッションを一括登録しました！`);
+            document.dispatchEvent(new CustomEvent('spt-data-updated')); // 全体再描画
+        };
+        reader.readAsText(file);
+        event.target.value = ''; // inputリセット
     }
 
     static escapeHtml(str) {
