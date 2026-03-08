@@ -10,7 +10,7 @@ const { apiUrl, nonce } = window.sptConfig || {};
  */
 async function fetchWrapper(endpoint, options = {}) {
     const url = `${apiUrl}${endpoint}`;
-    
+
     const headers = {
         'Content-Type': 'application/json',
         'X-WP-Nonce': nonce,
@@ -24,13 +24,13 @@ async function fetchWrapper(endpoint, options = {}) {
 
     try {
         const response = await fetch(url, config);
-        
+
         // WP REST API は 2xx 以外も返す可能性があるためハンドリング
         if (!response.ok) {
             const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.message || `HTTP error ${response.status}`);
         }
-        
+
         return await response.json();
     } catch (error) {
         console.error(`API Error on ${endpoint}:`, error);
@@ -59,7 +59,7 @@ export async function createChild(data) {
  * 特定の子供のタスク/進捗を取得
  */
 export async function fetchProgress(childId) {
-    return await fetchWrapper(`progress/${childId}`);
+    return await fetchWrapper(`progress/child/${childId}`);
 }
 
 /**

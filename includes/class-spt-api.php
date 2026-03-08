@@ -38,7 +38,7 @@ class SPT_API
         ]);
 
         // 進捗(タスク)関連のエンドポイント (GET時はchild_idを指定)
-        register_rest_route($namespace, '/progress/(?P<child_id>\d+)', [
+        register_rest_route($namespace, '/progress/child/(?P<child_id>\d+)', [
             [
                 'methods' => WP_REST_Server::READABLE,
                 'callback' => [__CLASS__, 'get_progress'],
